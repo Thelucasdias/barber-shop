@@ -7,8 +7,8 @@ interface HeaderProps {
 
 export default function Header({ session }: HeaderProps) {
   return (
-    <header className="w-full flex justify-between items-start max-w-4xl mx-auto mb-12">
-      <h1 className="text-2xl font-bold">Barbershop App</h1>
+    <header className="w-full flex justify-between items-center max-w-4xl px-4 ">
+      <h1 className="text-2xl font-bold ">Barbershop App</h1>
 
       {session ? (
         <button

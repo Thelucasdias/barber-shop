@@ -14,15 +14,6 @@ export const getServerSideProps = async (
 ) => {
   const session = await getServerSession(context.req, context.res, authOptions);
 
-  if (session) {
-    return {
-      redirect: {
-        destination: "/dashboard",
-        permanent: false,
-      },
-    };
-  }
-
   return {
     props: { session },
   };
@@ -30,7 +21,7 @@ export const getServerSideProps = async (
 
 export default function Home({ session }: HomeProps) {
   return (
-    <main className="">
+    <main>
       <Header session={session} />
       <HeroSection session={session} />
     </main>
