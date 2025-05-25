@@ -16,14 +16,11 @@ export default function HeroSection({ session }: HeroProps) {
         lugar.
       </p>
 
-      {!session && (
-        <button
-          onClick={() => signIn("google")}
-          className="bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition"
-        >
+      {
+        <button className="bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition">
           Comece agora
         </button>
-      )}
+      }
     </div>
   );
 }
