@@ -4,6 +4,7 @@ import { GetServerSidePropsContext } from "next";
 import { Session } from "next-auth";
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
+import SignupSection from "@/components/SignupSection";
 
 interface HomeProps {
   session: Session | null;
@@ -24,6 +25,7 @@ export default function Home({ session }: HomeProps) {
     <main>
       <Header session={session} />
       <HeroSection session={session} />
+      <SignupSection />
     </main>
   );
 }
