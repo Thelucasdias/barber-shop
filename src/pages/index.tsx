@@ -5,6 +5,7 @@ import { Session } from "next-auth";
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import SignupSection from "@/components/SignupSection";
+import AboutSection from "@/components/AboutSection";
 
 interface HomeProps {
   session: Session | null;
@@ -25,6 +26,7 @@ export default function Home({ session }: HomeProps) {
     <main>
       <Header session={session} />
       <HeroSection session={session} />
+      <AboutSection />
       <SignupSection />
     </main>
   );
