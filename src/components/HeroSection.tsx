@@ -1,10 +1,4 @@
-import { Session } from "next-auth";
-
-interface HeroProps {
-  session: Session | null;
-}
-
-export default function HeroSection({ session }: HeroProps) {
+export default function HeroSection() {
   return (
     <div className="mx-auto max-w-xl text-center">
       <h2 className="text-4xl font-bold m-20">

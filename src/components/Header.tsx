@@ -1,12 +1,6 @@
-import { signIn, signOut } from "next-auth/react";
-import { Session } from "next-auth";
 import { useRouter } from "next/router";
 
-interface HeaderProps {
-  session: Session | null;
-}
-
-export default function Header({ session }: HeaderProps) {
+export default function Header() {
   const router = useRouter();
   const handleLogin = () => {
     router.push("/login");
