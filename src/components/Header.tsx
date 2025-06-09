@@ -1,30 +1,30 @@
 import { signIn, signOut } from "next-auth/react";
 import { Session } from "next-auth";
+import { useRouter } from "next/router";
 
 interface HeaderProps {
   session: Session | null;
 }
 
 export default function Header({ session }: HeaderProps) {
-  return (
-    <header className="w-full flex justify-between items-center max-w-4xl px-4 ">
-      <h1>Barbershop App</h1>
+  const router = useRouter();
+  const handleLogin = () => {
+    router.push("/login");
+  };
 
-      {session ? (
-        <button
-          onClick={() => signOut()}
-          className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
-        >
-          Sair
-        </button>
-      ) : (
-        <button
-          onClick={() => signIn("google")}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-        >
-          Login
-        </button>
-      )}
-    </header>
+  return (
+    <div>
+      <header className="w-full flex justify-between items-center px-6 py-4 mx-auto">
+        <h1 className="text-2xl">Barbershop App</h1>
+        <div>
+          <button
+            onClick={handleLogin}
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition w-24"
+          >
+            Login
+          </button>
+        </div>
+      </header>
+    </div>
   );
 }
