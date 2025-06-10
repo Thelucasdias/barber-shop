@@ -1,8 +1,14 @@
 "use client";
 
+import { useRouter } from "next/router";
 import React, { useState } from "react";
 
 export default function SignupSection() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
   const [addresses, setAddresses] = useState([""]);
   const [formData, setFormData] = useState({
     fullName: "",
@@ -29,10 +35,56 @@ export default function SignupSection() {
 
   const addAddressField = () => setAddresses([...addresses, ""]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const dataToSubmit = { ...formData, addresses };
-    console.log("Dados enviados:", dataToSubmit);
+
+    setError("");
+    setSuccess("");
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("As senhas não coincidem.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.fullName,
+          email: formData.email,
+          password: formData.password,
+          phone: formData.phone,
+          addresses,
+          barbershopName: formData.barbershopName,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "Erro ao cadastrar.");
+      } else {
+        setSuccess("Cadastro realizado com sucesso!");
+        setFormData({
+          fullName: "",
+          email: "",
+          phone: "",
+          barbershopName: "",
+          password: "",
+          confirmPassword: "",
+        });
+        setAddresses([""]);
+
+        router.push("/login");
+      }
+    } catch (err) {
+      setError("Erro de rede ou servidor.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -149,12 +201,14 @@ export default function SignupSection() {
             className="w-full border rounded-lg px-3 py-2"
           />
         </div>
-
+        {error && <p className="text-red-500 text-sm">{error}</p>}
+        {success && <p className="text-green-600 text-sm">{success}</p>}
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white font-medium py-2 rounded-lg hover:bg-blue-700 transition"
+          disabled={loading}
+          className="w-full bg-blue-600 text-white font-medium py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
         >
-          Cadastrar
+          {loading ? "Cadastrando..." : "Cadastrar"}
         </button>
       </form>
     </section>
