@@ -1,19 +1,77 @@
+// schema.prisma
+
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 generator client {
   provider = "prisma-client-js"
 }
 
+model Barbershop {
+  id          String       @id @default(uuid())
+  name        String
+  address     String?
+  phone       String?
+  createdAt   DateTime     @default(now())
+
+  // Relationships
+  users        User[]
+  appointments Appointment[]
+  products     Product[]
+  sales        Sale[]
+}
+
 model User {
-  id       String   @id @default(uuid())
-  name     String?
-  email    String   @unique
-  password String   
-  phone    String
-  barbershopName    String
-  addresses Json?
-  createdAt DateTime @default(now())
+  id           String     @id @default(uuid())
+  name         String?
+  email        String     @unique
+  password     String
+  phone        String?
+  role         UserRole   @default(STAFF)
+  createdAt    DateTime   @default(now())
+
+  // Barbershop Relationship
+  barbershop   Barbershop @relation(fields: [barbershopId], references: [id])
+  barbershopId String
+}
+
+enum UserRole {
+  OWNER
+  STAFF
+}
+
+model Appointment {
+  id           String     @id @default(uuid())
+  clientName   String
+  service      String
+  price        Float
+  date         DateTime
+  createdAt    DateTime   @default(now())
+
+  barbershop   Barbershop @relation(fields: [barbershopId], references: [id])
+  barbershopId String
+}
+
+model Product {
+  id           String     @id @default(uuid())
+  name         String
+  price        Float
+  stock        Int
+  createdAt    DateTime   @default(now())
+
+  barbershop   Barbershop @relation(fields: [barbershopId], references: [id])
+  barbershopId String
+}
+
+model Sale {
+  id           String     @id @default(uuid())
+  productName  String
+  quantity     Int
+  total        Float
+  date         DateTime   @default(now())
+
+  barbershop   Barbershop @relation(fields: [barbershopId], references: [id])
+  barbershopId String
 }
