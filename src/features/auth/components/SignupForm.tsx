@@ -1,15 +1,9 @@
-"use client";
+import { useSignup } from "../hooks/useSignup";
+import { useState } from "react";
 
-import { useRouter } from "next/router";
-import React, { useState } from "react";
+export function SignupForm() {
+  const { registerBarbershop, loading } = useSignup();
 
-export default function SignupSection() {
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-
-  const [addresses, setAddresses] = useState([""]);
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -18,6 +12,10 @@ export default function SignupSection() {
     password: "",
     confirmPassword: "",
   });
+
+  const [addresses, setAddresses] = useState([""]);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -37,7 +35,6 @@ export default function SignupSection() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     setError("");
     setSuccess("");
 
@@ -46,44 +43,20 @@ export default function SignupSection() {
       return;
     }
 
-    setLoading(true);
-
-    try {
-      const res = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: formData.fullName,
-          email: formData.email,
-          password: formData.password,
-          phone: formData.phone,
-          addresses,
-          barbershopName: formData.barbershopName,
-        }),
+    const res = await registerBarbershop({ ...formData, addresses });
+    if (res.ok) {
+      setSuccess("Cadastro realizado com sucesso!");
+      setFormData({
+        fullName: "",
+        email: "",
+        phone: "",
+        barbershopName: "",
+        password: "",
+        confirmPassword: "",
       });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.error || "Erro ao cadastrar.");
-      } else {
-        setSuccess("Cadastro realizado com sucesso!");
-        setFormData({
-          fullName: "",
-          email: "",
-          phone: "",
-          barbershopName: "",
-          password: "",
-          confirmPassword: "",
-        });
-        setAddresses([""]);
-
-        router.push("/login");
-      }
-    } catch (err) {
-      setError("Erro de rede ou servidor.");
-    } finally {
-      setLoading(false);
+      setAddresses([""]);
+    } else {
+      setError(res.error || "Erro ao cadastrar.");
     }
   };
 
