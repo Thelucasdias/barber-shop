@@ -8,22 +8,51 @@ export default async function handler(
 ) {
   if (req.method !== "POST") return res.status(405).end();
 
-  const { name, email, password, phone, barbershopName, addresses } = req.body;
-  const existing = await prisma.user.findUnique({ where: { email } });
-  if (existing) return res.status(400).json({ error: "Email já cadastrado" });
-
-  const hashedPassword = await hash(password, 10);
-  const user = await prisma.user.create({
-    data: {
-      name,
+  try {
+    const {
+      fullName: name,
       email,
-      password: hashedPassword,
       phone,
+      password,
       barbershopName,
       addresses,
-    },
-  });
+    } = req.body;
 
-  const { password: _, ...userWithoutPassword } = user;
-  res.status(201).json({ user: userWithoutPassword });
+    if (!name || !email || !password || !barbershopName || !addresses?.length) {
+      return res.status(400).json({ error: "Dados obrigatórios ausentes." });
+    }
+
+    const existing = await prisma.user.findUnique({ where: { email } });
+    if (existing)
+      return res.status(400).json({ error: "Email já cadastrado." });
+
+    const hashedPassword = await hash(password, 10);
+
+    const barbershop = await prisma.barbershop.create({
+      data: {
+        name: barbershopName,
+        address: addresses[0] || "",
+        phone,
+      },
+    });
+
+    const user = await prisma.user.create({
+      data: {
+        name,
+        email,
+        phone,
+        password: hashedPassword,
+        role: "OWNER",
+        barbershop: {
+          connect: { id: barbershop.id },
+        },
+      },
+    });
+
+    const { password: _, ...userWithoutPassword } = user;
+    res.status(201).json({ user: userWithoutPassword });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Erro interno no servidor." });
+  }
 }
