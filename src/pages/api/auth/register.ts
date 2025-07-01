@@ -15,10 +15,10 @@ export default async function handler(
       phone,
       password,
       barbershopName,
-      addresses,
+      address,
     } = req.body;
 
-    if (!name || !email || !password || !barbershopName || !addresses?.length) {
+    if (!name || !email || !password || !barbershopName || !address) {
       return res.status(400).json({ error: "Dados obrigatórios ausentes." });
     }
 
@@ -31,7 +31,7 @@ export default async function handler(
     const barbershop = await prisma.barbershop.create({
       data: {
         name: barbershopName,
-        address: addresses[0] || "",
+        address,
         phone,
       },
     });
@@ -43,9 +43,7 @@ export default async function handler(
         phone,
         password: hashedPassword,
         role: "OWNER",
-        barbershop: {
-          connect: { id: barbershop.id },
-        },
+        barbershop: { connect: { id: barbershop.id } },
       },
     });
 
