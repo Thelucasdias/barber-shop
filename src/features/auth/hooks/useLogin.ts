@@ -9,7 +9,7 @@ export function useLogin() {
     });
 
     if (res?.ok) {
-      window.location.href = "/";
+      window.location.href = "/dashboard";
     }
 
     return res;

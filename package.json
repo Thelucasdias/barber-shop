@@ -9,7 +9,8 @@
     "lint": "next lint",
     "studio": "prisma studio",
     "d:up": "docker compose up",
-    "d:down": "docker compose down"
+    "d:down": "docker compose down",
+    "d:prisma": "docker exec -it barbershop_app npx prisma studio"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.9.1",
