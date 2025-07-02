@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "studio": "prisma studio",
+    "d:up": "docker compose up",
+    "d:down": "docker compose down"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.9.1",
